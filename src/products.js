@@ -37,11 +37,17 @@ var products = [{
 products2=products;
 arrOS=[];
 arrBrand=[];
+osSelected = "";
+brandSelected = "";
+
+//Creating an array of Operating Systems
 for (var i=0; i<products.length;i++){
 	if (!arrOS.includes(products[i].os)) {
 		arrOS.push(products[i].os);
 	}
 }
+
+//Creating an array of Brands
 for (var i=0; i<products.length;i++){
 	if (!arrBrand.includes(products[i].brand)) {
 		arrBrand.push(products[i].brand);
@@ -62,16 +68,12 @@ function myDisplay(products){
 	{
 		html1 += "<a href='#' data-os="+arrOS[i]+" class='os' >"+arrOS[i]+"</a>";
 	}
-
-	//onclick=osFilter('"+arrOS[i]+"')
-
 	html1 += '</div>\
 			</div>';
 	html1 += '<div class="dropdown">\
 				<button id="branddropbutton" class="dropbutton">Filter by Brand</button>\
 				<div id="brandDropdown" class="dropdown-content">';
 	for(var i=0; i<arrBrand.length; i++) {
-		// html1 += '<a href="#" id="'+arrBrand[i]+'" onclick="brandFilter('+arrBrand[i]+')" >'+arrBrand[i]+'</a>';
 		html1 += "<a href='#' data-brand="+arrBrand[i]+" class='brand' >"+arrBrand[i]+"</a>";
 	}	
 	html1 += '</div>\
@@ -99,39 +101,44 @@ function myDisplay(products){
 
 $(document).ready(function()
 {
-	var osSelected;
 	$(document).on("click", ".os", function()
 	{
 		osSelected=$(this).data("os");
-		tempOSarr = [];
 		for (i=0;i<products.length;i++) 
-		{
-			if (products[i].os == osSelected) 
-			{
-				tempOSarr.push(products[i]);
+		{	$('#'+products[i].id).show();
+			if(brandSelected!="") {
+				if (products[i].os != osSelected || products[i].brand != brandSelected) {
+					$('#'+products[i].id).hide();
+				}
+			}
+			else {
+				if (products[i].os != osSelected) {
+					$('#'+products[i].id).hide();
+				}
 			}
 		}
-		products = tempOSarr;
-		myDisplay(tempOSarr);
 	});
 });
 
 $(document).ready(function()
 {
-	var brandSelected;
 	$(document).on("click", ".brand", function()
 	{
 		brandSelected=$(this).data("brand");
-		tempBrandarr = [];
 		for (i=0;i<products.length;i++) 
 		{
-			if (products[i].brand == brandSelected) 
-			{
-				tempBrandarr.push(products[i]);
+			if(osSelected!="") {
+				if (products[i].os != osSelected || products[i].brand != brandSelected) {
+					$('#'+products[i].id).hide();
+				}
+			}
+			else {
+				if (products[i].brand != brandSelected) {
+					$('#'+products[i].id).hide();
+				}
 			}
 		}
-		products = tempBrandarr;
-		myDisplay(tempBrandarr);
+		brandSelected = "";
 	});
 });
 
@@ -139,10 +146,8 @@ $(document).ready(function(){
 	var id;
 	$(document).on('click','#remove', function(){
 		id = $(this).data("hide");
-	console.log(id);
 	for (var i =0; i<products.length; i++) {
 		if(products[i].id == id) {
-			console.log("hii")
 			$('#'+products[i].id).hide();
 		}
 	}
@@ -166,9 +171,12 @@ $(document).on('click','#search-button', function(){
 	var y = $('#search-field').val();
 	temarr=[];
 	for (i=0;i< products.length;i++) {
+		
 		if(products[i].id == y || products[i].name==y) {
-			temarr.push(products[i]);
+			$('#'+products[i].id).show();
 		}
-	}
-	myDisplay(temarr);
+		else {
+			$('#'+products[i].id).hide();
+		}	
+		}
 })
